@@ -1,294 +1,152 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>API Key Generator — LumiLook</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daftar API Keys</title>
+
   <style>
     :root{
-      --bg:#f3edf9; /* soft pastel purple */
-      --card:#fef7ff; /* soft lavender-pink */
+      --bg:#f3edf9;
+      --card:#fef7ff;
       --accent:#7c3aed;
       --muted:#6b7280;
-      --success:#10b981;
       --border:#e5e7eb;
     }
 
-    *{box-sizing:border-box}
     body{
-      margin:0;min-height:100vh;font-family:Inter,ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial;
-      background: var(--bg);
-      color:#374151;display:flex;align-items:center;justify-content:center;padding:24px;
+      margin:0;
+      padding:20px;
+      background:var(--bg);
+      font-family:Inter, sans-serif;
+      color:#374151;
     }
-    .container{width:100%;max-width:980px}
-    .card{
+
+    h1{
+      text-align:center;
+      margin-bottom:20px;
+      color:#4b3c8f;
+    }
+
+    .table-container{
       background:var(--card);
+      border-radius:12px;
+      padding:20px;
+      max-width:1000px;
+      margin:0 auto;
+      box-shadow:0 4px 16px rgba(0,0,0,0.05);
       border:1px solid var(--border);
-      padding:28px;border-radius:14px;box-shadow: 0 4px 16px rgba(0,0,0,0.05);
-      display:grid;grid-template-columns:1fr 360px;gap:20px;align-items:start;
     }
-    @media (max-width:880px){.card{grid-template-columns:1fr}}
 
-    header h1{margin:0;font-size:22px;color:#111827}
-    header p{margin:6px 0 0;color:var(--muted);font-size:14px}
-
-    label{display:block;font-size:13px;color:#4b5563;margin-bottom:8px}
-    input[type=text], input[type=email], select{
-      width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--border);
-      background:white;color:#111827;font-size:14px;outline:none
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:10px;
     }
-    .row{display:flex;gap:12px}
+
+    th, td{
+      padding:12px;
+      border-bottom:1px solid var(--border);
+      font-size:14px;
+    }
+
+    th{
+      background:#ede7fb;
+      color:#4b3c8f;
+      font-weight:600;
+      text-align:left;
+    }
+
+    tr:hover{
+      background:#f8f4ff;
+    }
+
+    .pill{
+      padding:4px 8px;
+      background:#eceaff;
+      border-radius:999px;
+      font-size:12px;
+      color:#4b3c8f;
+      display:inline-block;
+    }
+
+    .no-data{
+      text-align:center;
+      padding:20px;
+      color:var(--muted);
+    }
+
     .btn{
-      display:inline-flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;border:none;cursor:pointer;font-weight:600;
-      background:var(--accent);color:white;box-shadow:0 3px 10px rgba(124,58,237,0.18)
+      display:inline-block;
+      margin-bottom:10px;
+      background:var(--accent);
+      padding:10px 16px;
+      border-radius:10px;
+      color:white;
+      text-decoration:none;
+      font-weight:600;
     }
-    .btn:disabled{opacity:0.55;cursor:not-allowed}
-    .muted{color:var(--muted);font-size:13px}
-
-    .output{
-      background:white;border:1px solid var(--border);padding:12px;border-radius:10px;word-break:break-all;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Courier New', monospace;font-size:13px;color:#111827
-    }
-
-    .side{
-      padding:18px;background:white;border-radius:12px;border:1px solid var(--border);
-    }
-    .small{font-size:13px;color:var(--muted)}
-
-    .pill{padding:6px 8px;border-radius:999px;background:#f3f4f6;font-size:12px;color:#4b5563}
-
-    .ghost{background:white;border:1px solid var(--border);padding:8px 10px;border-radius:10px;color:#4b5563;cursor:pointer}
-
-    .strength{height:8px;border-radius:8px;background:#e5e7eb;overflow:hidden}
-    .strength > i{display:block;height:100%}
-    .strength-label{font-size:12px;color:var(--muted);margin-top:6px}
-
-    .hint{font-size:12px;color:var(--muted);margin-top:10px}
-
-    .spinner{width:16px;height:16px;border-radius:50%;border:2px solid #ddd;border-top-color:var(--accent);animation:spin 0.9s linear infinite}
-    @keyframes spin{to{transform:rotate(360deg)}}
-
-    input:focus, select:focus, button:focus{box-shadow:0 0 0 4px rgba(124,58,237,0.15);border-color:var(--accent)}
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="card" role="region" aria-label="Form generator API key">
-      <div>
-        <header>
-          <h1>Generate API Key</h1>
-          <p>Isi informasi lalu klik <strong>Generate</strong>. Kunci akan muncul di sebelah kanan dan dapat disalin.</p>
-        </header>
 
-        <form id="form" onsubmit="return false" aria-describedby="form-desc">
-          <div style="margin-top:16px">
-            <label for="appName">Nama aplikasi / proyek</label>
-            <input id="appName" name="appName" type="text" placeholder="LumiLook Mobile App" required />
-          </div>
+  <h1>Daftar API Key</h1>
 
-          <div style="margin-top:12px">
-            <label for="ownerEmail">Email pemilik (untuk notifikasi)</label>
-            <input id="ownerEmail" name="ownerEmail" type="email" placeholder="nama@domain.com" required />
-            <div id="emailError" class="muted" style="display:none;margin-top:6px;color:#ffb3b3"></div>
-          </div>
+  <div class="table-container">
 
-          <div style="margin-top:12px">
-            <label for="scopes">Scope akses</label>
-            <select id="scopes" name="scopes" aria-label="Pilih scope akses">
-              <option value="read">Read only — akses data publik</option>
-              <option value="write">Write — menulis data</option>
-              <option value="admin">Admin — akses penuh</option>
-            </select>
-          </div>
+    <a href="/index.html" class="btn">⬅ Kembali ke Generator</a>
 
-          <div class="row" style="margin-top:14px">
-            <button id="generateBtn" class="btn" type="button"> <span id="genLabel">Generate</span></button>
-            <button id="regenBtn" class="ghost" type="button">Regenerate</button>
-            <button id="revokeBtn" class="ghost" type="button">Revoke</button>
-          </div>
+    <table>
+      <thead>
+        <tr>
+          <th>App Name</th>
+          <th>Owner Email</th>
+          <th>Scope</th>
+          <th>API Key</th>
+          <th>Dibuat</th>
+        </tr>
+      </thead>
+      <tbody id="dataBody">
+        <tr><td colspan="5" class="no-data">Memuat data...</td></tr>
+      </tbody>
+    </table>
 
-          <div class="hint">Tip: Simpan kunci pada vault aman. Setelah ditutup, beberapa layanan tidak menampilkan kunci penuh lagi.</div>
-
-          <footer id="form-desc">Form menghasilkan kunci berbasis kriptografi di sisi client untuk demo; untuk produksi gunakan endpoint backend yang membuat dan menyimpan kunci dengan aman.</footer>
-        </form>
-      </div>
-
-      <aside class="side" aria-live="polite">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <div>
-            <div class="small">API Key</div>
-            <div class="meta">
-              <div class="pill" id="scopePill">Scope: —</div>
-              <div class="pill" id="ownerPill">Owner: —</div>
-            </div>
-          </div>
-          <div id="statusArea" class="muted">Status: <span id="status">idle</span></div>
-        </div>
-
-        <div class="output" id="keyOutput" style="margin-top:12px;min-height:58px;display:flex;align-items:center;justify-content:space-between;gap:12px">
-          <code id="keyText" style="flex:1;">—</code>
-          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
-            <button id="copyBtn" class="ghost" aria-label="Copy API key">Copy</button>
-            <button id="revealBtn" class="ghost" aria-pressed="false">Reveal</button>
-          </div>
-        </div>
-
-        <div style="margin-top:12px">
-          <label class="small">Strength</label>
-          <div class="strength" aria-hidden="true"><i id="strengthBar" style="width:0%"></i></div>
-          <div class="strength-label" id="strengthText">—</div>
-        </div>
-
-        <div style="margin-top:14px;display:flex;gap:8px">
-          <button id="saveBtn" class="btn" style="flex:1">Save to server</button>
-        </div>
-
-        <div style="margin-top:12px" class="small muted">
-          Keterangan: Tombol "Save to server" memanggil endpoint backend (tidak diimplementasikan di demo ini). Gunakan HTTPS dan simpan hash kunci, bukan kunci mentah, bila memungkinkan.
-        </div>
-      </aside>
-    </div>
   </div>
 
-  <script>
-    // Utilities
-    function genRandomKey(length = 40){
-      // Secure random bytes -> base64url-like
-      const bytes = new Uint8Array(length);
-      crypto.getRandomValues(bytes);
-      // convert to base64-url
-      let str = Array.from(bytes).map(b=>('0'+b.toString(16)).slice(-2)).join('');
-      // Build a readable key with dashes
-      let parts = [];
-      for(let i=0;i<str.length;i+=8) parts.push(str.slice(i,i+8));
-      return parts.join('-').slice(0, length + Math.floor(length/8));
-    }
+<script>
+  async function loadAPIKeys(){
+    const tbody = document.getElementById("dataBody");
 
-    function setStatus(s){document.getElementById('status').textContent = s}
+    try{
+      const res = await fetch("/api/keys");
+      const data = await res.json();
 
-    function estimateStrength(key){
-      // simple heuristic: length + variety of char groups
-      let score = 0;
-      if(!key) return {pct:0,label:'Empty'};
-      const length = key.replace(/-/g,'').length;
-      score += Math.min(40, length);
-      // variety: digits / lowercase / uppercase / special
-      if(/[a-z]/.test(key)) score += 10;
-      if(/[A-Z]/.test(key)) score += 10;
-      if(/[0-9]/.test(key)) score += 10;
-      if(/[^a-zA-Z0-9]/.test(key)) score += 10;
-      const pct = Math.min(100, Math.round(score));
-      let label = pct > 80 ? 'Very strong' : pct > 60 ? 'Strong' : pct > 40 ? 'Medium' : 'Weak';
-      return {pct,label};
-    }
-
-    // Elements
-    const appName = document.getElementById('appName');
-    const ownerEmail = document.getElementById('ownerEmail');
-    const scopes = document.getElementById('scopes');
-    const generateBtn = document.getElementById('generateBtn');
-    const regenBtn = document.getElementById('regenBtn');
-    const revokeBtn = document.getElementById('revokeBtn');
-    const keyText = document.getElementById('keyText');
-    const keyOutput = document.getElementById('keyOutput');
-    const copyBtn = document.getElementById('copyBtn');
-    const revealBtn = document.getElementById('revealBtn');
-    const strengthBar = document.getElementById('strengthBar');
-    const strengthText = document.getElementById('strengthText');
-    const scopePill = document.getElementById('scopePill');
-    const ownerPill = document.getElementById('ownerPill');
-    const statusEl = document.getElementById('status');
-    const genLabel = document.getElementById('genLabel');
-    const saveBtn = document.getElementById('saveBtn');
-    const emailError = document.getElementById('emailError');
-
-    let currentKey = '';
-    let revealed = false;
-
-    function updateMeta(){
-      scopePill.textContent = 'Scope: '+scopes.value;
-      ownerPill.textContent = 'Owner: '+(ownerEmail.value||'—');
-    }
-
-    function showKey(k){
-      currentKey = k;
-      keyText.textContent = revealed ? k : (k ? k.slice(0,6)+'…'+k.slice(-6) : '—');
-      const st = estimateStrength(k);
-      strengthBar.style.width = st.pct + '%';
-      strengthBar.style.background = st.pct > 80 ? 'linear-gradient(90deg, #10B981, #059669)' : st.pct > 60 ? 'linear-gradient(90deg,#f59e0b,#f97316)' : 'linear-gradient(90deg,#ef4444,#f97316)';
-      strengthText.textContent = st.label;
-      statusEl.textContent = k ? 'generated' : 'idle';
-    }
-
-    function validateEmail(){
-      const v = ownerEmail.value.trim();
-      if(!v) { emailError.style.display='none'; return true }
-      const ok = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v);
-      emailError.style.display = ok ? 'none' : 'block';
-      emailError.textContent = ok ? '' : 'Format email tidak valid';
-      return ok;
-    }
-
-    ownerEmail.addEventListener('input', ()=>{ validateEmail(); updateMeta(); });
-    scopes.addEventListener('change', updateMeta);
-    appName.addEventListener('input', ()=>{});
-
-    generateBtn.addEventListener('click', async ()=>{
-      if(!validateEmail()) return;
-      generateBtn.disabled = true; genLabel.innerHTML = '<span class="spinner" aria-hidden="true"></span> Generating';
-      setStatus('generating');
-      await new Promise(r=>setTimeout(r,300));
-      const k = genRandomKey(48);
-      revealed = false;
-      showKey(k);
-      generateBtn.disabled = false; genLabel.textContent = 'Generate';
-    });
-
-    regenBtn.addEventListener('click', ()=>{
-      if(!currentKey){
-        // generate new if none
-        generateBtn.click();
+      if(!data || data.length === 0){
+        tbody.innerHTML = `<tr><td colspan="5" class="no-data">Belum ada API Key</td></tr>`;
         return;
       }
-      const k = genRandomKey(48);
-      revealed = false;
-      showKey(k);
-    });
 
-    revokeBtn.addEventListener('click', ()=>{
-      if(!currentKey) return;
-      if(!confirm('Revoke this key? This will remove it from the UI.\n(Backend revocation must be implemented on server)')) return;
-      currentKey = '';
-      showKey('');
-    });
+      tbody.innerHTML = "";
 
-    copyBtn.addEventListener('click', async ()=>{
-      if(!currentKey) return alert('Tidak ada kunci untuk disalin');
-      try{
-        await navigator.clipboard.writeText(currentKey);
-        copyBtn.textContent = 'Copied';
-        setTimeout(()=>copyBtn.textContent='Copy',1200);
-      }catch(e){
-        alert('Gagal menyalin: '+e.message);
-      }
-    });
+      data.forEach(item => {
+        tbody.innerHTML += `
+          <tr>
+            <td>${item.appName}</td>
+            <td>${item.ownerEmail}</td>
+            <td><span class="pill">${item.scope}</span></td>
+            <td>${item.apiKey || item.keyMasked}</td>
+            <td>${new Date(item.createdAt).toLocaleString()}</td>
+          </tr>
+        `;
+      });
 
-    revealBtn.addEventListener('click', ()=>{
-      revealed = !revealed;
-      revealBtn.textContent = revealed ? 'Hide' : 'Reveal';
-      revealBtn.setAttribute('aria-pressed', revealed.toString());
-      showKey(currentKey);
-    });
+    } catch(err){
+      tbody.innerHTML = `<tr><td colspan="5" class="no-data">Gagal memuat data</td></tr>`;
+    }
+  }
 
-    saveBtn.addEventListener('click', ()=>{
-      if(!currentKey) return alert('Tidak ada kunci untuk disimpan');
-      // Demo: POST to /api/keys (not implemented)
-      alert('Simulasi: kunci akan dikirim ke server. Implementasikan endpoint /api/keys di backend.\nContoh payload: {appName, ownerEmail, scope, keyHash}');
-    });
+  loadAPIKeys();
+</script>
 
-    // initial
-    updateMeta();
-    showKey('');
-  </script>
 </body>
 </html>
